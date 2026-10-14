@@ -12,20 +12,21 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { useForm } from "@tanstack/react-form";
 import { FieldError } from "../ui/field";
-import { useRegister } from "@/hooks/auth/auth.hooks";
+import { useGoogle, useRegister } from "@/hooks/auth/auth.hooks";
 import { toast } from "../ui/toast";
 import { useRouter } from "next/navigation";
+import { GoogleLogin } from "@react-oauth/google";
 
 const SignupForm = () => {
   const register = useRegister();
   const router = useRouter();
+  const { mutate: googleLogin } = useGoogle();
 
   const form = useForm({
     defaultValues: {
       name: "",
       email: "",
       password: "",
-     
     },
     onSubmit: async ({ value }) => {
       const result = await register.mutateAsync(value);
@@ -47,6 +48,41 @@ const SignupForm = () => {
       }
     },
   });
+
+  const handleGoogleSuccess = (credentialResponse: { credential?: string }) => {
+    const idToken = credentialResponse.credential;
+console.log(idToken)
+    if (!idToken) {
+      toast.add({
+        title: "Google OAuth failed",
+        description: "Something went wrong. Please try again.",
+      });
+      return;
+    }
+
+    googleLogin(idToken, {
+      onSuccess: () => {
+          toast.add({
+          type: "success",
+          description: "google login successfull ",
+        });
+      },
+      onError: () => {
+        toast.add({
+          title: "Google OAuth failed",
+          description: "Something went wrong. Please try again.333",
+        });
+      },
+    });
+  };
+
+  const handelGoogleError = () => {
+    toast.add({
+      title: "google oauth faied",
+      description: "somethisn wen wron .plest try again",
+    });
+    return;
+  };
 
   return (
     <form
@@ -142,8 +178,6 @@ const SignupForm = () => {
           }}
         </form.Field>
 
-      
-
         {/* Password */}
         <form.Field
           name="password"
@@ -198,9 +232,10 @@ const SignupForm = () => {
         <FieldSeparator>Or continue with</FieldSeparator>
 
         <Field>
-          <Button variant="outline" type="button" className="w-full">
-            Sign up with GitHub
-          </Button>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={handelGoogleError}
+          ></GoogleLogin>
 
           <FieldDescription className="px-6 text-center">
             Already have an account?{" "}

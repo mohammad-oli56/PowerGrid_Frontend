@@ -1,6 +1,6 @@
 "use client";
 
-import { loginUser, registeruser, verifyaccount } from "@/api/auth/auth.api";
+import { googleaccount, loginUser, registeruser, verifyaccount } from "@/api/auth/auth.api";
 import { useMutation } from "@tanstack/react-query";
 
 
@@ -22,5 +22,11 @@ export function useRegister(){
 export function useVerify(){
   return useMutation({
     mutationFn:verifyaccount
+  })
+}
+
+export function useGoogle(){
+  return useMutation({
+    mutationFn:googleaccount
   })
 }
