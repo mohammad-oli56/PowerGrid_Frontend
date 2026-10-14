@@ -2,11 +2,12 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Zap } from "lucide-react";
-// import { getMe } from "@/service/getMe";
-// import { DropdownMenuDemo } from "./Deopdown";
+import { getMe } from "@/service/getme";
+import { DropdownMenuDemo } from "../public/DropdownMenuDemo";
+
 
 const Header = async () => {
-//   const user = await getMe();
+  const user = await getMe();
 // console.log(user.data)
   const routes = [
     { name: "Home", url: "/" },
@@ -43,7 +44,7 @@ const Header = async () => {
         </nav>
 
         {/* Authentication */}
-        {/* <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3">
           {user?.success !== false ? (
             <DropdownMenuDemo user={user.data} />
           ) : (
@@ -64,7 +65,7 @@ const Header = async () => {
               </Link>
             </>
           )}
-        </div> */}
+        </div>
       </div>
     </header>
   );
