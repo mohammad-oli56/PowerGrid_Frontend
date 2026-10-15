@@ -1,20 +1,18 @@
-
 "use client";
 
+import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   CalendarDays,
   User,
   LogOut,
+  LoaderCircle,
 } from "lucide-react";
-
-
+import { logout } from "@/service/logout";
 
 
 const menuItems = [
-
-
   {
     name: "Reset password",
     href: "/profile/reset-password",
@@ -25,13 +23,28 @@ const menuItems = [
     href: "/profile/update-profile",
     icon: User,
   },
- 
 ];
 
 
 
 const ProfileSidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout(); // সার্ভার অ্যাকশন কল করা হলো (যা কুকি ডিলিট করবে)
+      
+      // লগআউটের পর হোমপেজে বা লগইন পেজে রিডাইরেক্ট করে রিফ্রেশ করা
+      router.push("/login"); // আপনার পছন্দমতো রাউট দিন (যেমন: "/" বা "/login")
+      router.refresh();
+    } catch (error) {
+      console.error("Logout failed:", error);
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <div className="flex h-screen w-64 flex-col border-r bg-white">
@@ -75,10 +88,16 @@ const ProfileSidebar = () => {
       <div className="border-t p-4">
         <button
           type="button"
-          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50"
         >
-          <LogOut className="h-5 w-5" />
-          Logout
+          {isLoggingOut ? (
+            <LoaderCircle className="h-5 w-5 animate-spin" />
+          ) : (
+            <LogOut className="h-5 w-5" />
+          )}
+          {isLoggingOut ? "Logging out..." : "Logout"}
         </button>
       </div>
     </div>
@@ -86,4 +105,3 @@ const ProfileSidebar = () => {
 };
 
 export default ProfileSidebar;
-

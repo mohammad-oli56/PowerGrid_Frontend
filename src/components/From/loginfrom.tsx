@@ -1,9 +1,7 @@
-
 "use client";
 
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Eye, EyeClosed } from "lucide-react";
 
 import { Input } from "../ui/input";
@@ -22,7 +20,6 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   const login = useLogin();
-  const router = useRouter();
 
   const form = useForm({
     defaultValues: {
@@ -47,29 +44,29 @@ export default function LoginForm() {
           description: "Login successful!",
         });
 
-        // switch (result.role) {
-        //   case "ADMIN":
-        //     router.push("/admin");
-        //     break;
+        // router.push এর বদলে window.location.href ব্যবহার করা হলো
+        // যাতে কুকি সঠিকভাবে সেট হয়ে পেজ রিডাইরেক্ট হয়
+        window.location.href = "/";
 
-        //   case "POWER-OPWRATOR":
-        //     router.push("/poweroperator");
-        //     break;
+        /* যদি রোল অনুযায়ী রিডাইরেক্ট করতে চান, এভাবে করতে পারেন:
+        switch (result.role) {
+          case "ADMIN":
+            window.location.href = "/admin";
+            break;
+          case "POWER-OPWRATOR":
+            window.location.href = "/poweroperator";
+            break;
+          case "TECHNICIAN":
+            window.location.href = "/technician";
+            break;
+          case "COUSTOMER":
+            window.location.href = "/coustomer";
+            break;
+          default:
+            window.location.href = "/";
+        }
+        */
 
-        //   case "TECHNICIAN":
-        //     router.push("/technician");
-        //     break;
-
-        //   case "COUSTOMER":
-        //     router.push("/coustomer");
-        //     break;
-
-        //   default:
-        //     toast.add({
-        //       type: "error",
-        //       description: `Unknown role: ${result.role}`,
-        //     });
-        // }
       } catch (error) {
         const message =
           error instanceof Error
@@ -165,7 +162,7 @@ export default function LoginForm() {
                     />
 
                     <button
-                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
                       type="button"
                       onClick={() =>
                         setShowPassword((prev) => !prev)

@@ -11,7 +11,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { logout } from "@/service/logout";
+import { LoaderCircle, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 type User = {
   name: string;
@@ -22,8 +25,21 @@ type User = {
 export function DropdownMenuDemo({ user }: { user: User }) {
   const router = useRouter();
 
-  const handleLogout = () => {
-    router.push("/login");
+ const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout(); // সার্ভার অ্যাকশন কল করা হলো (যা কুকি ডিলিট করবে)
+      
+      // লগআউটের পর হোমপেজে বা লগইন পেজে রিডাইরেক্ট করে রিফ্রেশ করা
+      // router.push("/login"); 
+      window.location.href="/login"
+      router.refresh();
+    } catch (error) {
+      console.error("Logout failed:", error);
+      setIsLoggingOut(false);
+    }
   };
 
   const handleDashboard = () => {
@@ -70,9 +86,21 @@ export function DropdownMenuDemo({ user }: { user: User }) {
             Dashboard
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={handleLogout}>
-            Logout
-          </DropdownMenuItem>
+          <div className="border-t p-4">
+        <button
+          type="button"
+          onClick={handleLogout}
+          disabled={isLoggingOut}
+          className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 disabled:opacity-50"
+        >
+          {isLoggingOut ? (
+            <LoaderCircle className="h-5 w-5 animate-spin" />
+          ) : (
+            <LogOut className="h-5 w-5" />
+          )}
+          {isLoggingOut ? "Logging out..." : "Logout"}
+        </button>
+      </div>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />
