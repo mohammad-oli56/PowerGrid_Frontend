@@ -1,9 +1,10 @@
 import React from 'react'
+import UpdateProfile from '../Component/UpdateProfile'
 
 const page = () => {
   return (
     <div>
-      this is update profile
+      <UpdateProfile></UpdateProfile>
     </div>
   )
 }

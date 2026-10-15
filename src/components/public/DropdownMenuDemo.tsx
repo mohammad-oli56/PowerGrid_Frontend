@@ -30,10 +30,7 @@ export function DropdownMenuDemo({ user }: { user: User }) {
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
-      await logout(); // সার্ভার অ্যাকশন কল করা হলো (যা কুকি ডিলিট করবে)
-      
-      // লগআউটের পর হোমপেজে বা লগইন পেজে রিডাইরেক্ট করে রিফ্রেশ করা
-      // router.push("/login"); 
+      await logout(); 
       window.location.href="/login"
       router.refresh();
     } catch (error) {

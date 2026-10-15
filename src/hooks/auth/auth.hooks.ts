@@ -1,8 +1,8 @@
 "use client";
 
-import { getMe, googleaccount, loginUser, registeruser, verifyaccount } from "@/api/auth/auth.api";
-import { getMes } from "@/api/profile.api";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { getMe, googleaccount, loginUser, registeruser, updateProfile, verifyaccount } from "@/api/auth/auth.api";
+
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 
 export function useLogin() {
@@ -12,25 +12,26 @@ export function useLogin() {
 }
 
 
-export function useRegister(){
+export function useRegister() {
   return useMutation({
-    mutationFn:registeruser
+    mutationFn: registeruser
   })
 }
 
 
 
-export function useVerify(){
+export function useVerify() {
   return useMutation({
-    mutationFn:verifyaccount
+    mutationFn: verifyaccount
   })
 }
 
-export function useGoogle(){
+export function useGoogle() {
   return useMutation({
-    mutationFn:googleaccount
+    mutationFn: googleaccount
   })
 }
+
 
 export function useGetMe() {
   return useQuery({
@@ -39,6 +40,22 @@ export function useGetMe() {
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
+    refetchOnMount: true,
+    retry: 1,
   });
 }
+
+
+
+export function useUpdateprofile() {
+
+
+  return useMutation({
+    mutationFn: updateProfile,
+
+
+
+
+  });
+}
+

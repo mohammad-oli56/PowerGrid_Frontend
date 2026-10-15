@@ -1,5 +1,5 @@
 import { useGetMe } from '@/hooks/auth/auth.hooks';
-import { getMe } from '@/service/getme'
+// import { getMe } from '@/service/getme'
 import React from 'react'
 import MainProfile from './Component/MainProfile';
 

@@ -257,8 +257,8 @@ export async function googleaccount(payload: string) {
     if (axios.isAxiosError(error)) {
       throw new Error(
         error.response?.data?.message ||
-          error.message ||
-          "Google login failed"
+        error.message ||
+        "Google login failed"
       );
     }
 
@@ -268,18 +268,16 @@ export async function googleaccount(payload: string) {
 
 
 export async function getMe() {
-   try {
-    const cookieStore = await cookies();
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get("accessToken")?.value;
 
-    const accessToken = cookieStore.get("accessToken")?.value;
+  console.log("Access token exists:", !!accessToken);
 
-    if (!accessToken) {
-      return {
-        success: false,
-        message: "You are not logged in",
-      };
-    }
+  if (!accessToken) {
+    throw new Error("You are not logged in");
+  }
 
+  try {
     const res = await axios.get(
       "https://assignment-06-mu.vercel.app/api/v1/auth/me",
       {
@@ -289,20 +287,47 @@ export async function getMe() {
       }
     );
 
+    console.log("getMe success:", res.data.success);
+
     return res.data;
-  } catch (error: unknown) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
-      return {
-        success: false,
-        message:
-          error.response?.data?.message || "Failed to fetch user",
-      };
+      console.error("getMe status:", error.response?.status);
+      console.error("getMe error:", error.response?.data);
     }
 
-    return {
-      success: false,
-      message: "Failed to fetch user",
-    };
+    throw error;
   }
 }
 
+type UpdateProfileData = {
+ 
+  phone: string;
+  address: string;
+};
+
+export async function updateProfile(data: UpdateProfileData) {
+
+  const cookieStore = await cookies();
+
+    const accessToken = cookieStore.get("accessToken")?.value;
+
+    if (!accessToken) {
+      return {
+        success: false,
+        message: "You are not logged in",
+      };
+    }
+  console.log(data)
+  const res = await axios.patch(
+    "https://assignment-06-mu.vercel.app/api/v1/auth/profile",
+    data,
+    {
+      headers: {
+        Cookie: `accessToken=${accessToken}`,
+      },
+    }
+  );
+
+  return res.data;
+}

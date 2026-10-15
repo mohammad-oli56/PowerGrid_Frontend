@@ -7,14 +7,14 @@ export default function CustomerLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="flex h-screen overflow-hidden">
-      {/* Left Sidebar - এটি ফিক্সড থাকবে এবং নিজের মতো স্ক্রোল হবে */}
-      <aside className="w-64 shrink-0 border-r bg-white overflow-y-auto">
+    <div className="min-h-screen bg-gray-50 lg:flex lg:h-screen lg:overflow-hidden">
+      {/* Left Sidebar (Mobile top bar + drawer, Desktop fixed sidebar) */}
+      <div className="lg:shrink-0">
         <ProfileSidebar />
-      </aside>
+      </div>
 
-      {/* Right Content - শুধু এই অংশটি স্ক্রোল হবে, সাইডবার স্থির থাকবে */}
-      <main className="min-w-0 flex-1 bg-gray-50 overflow-y-auto p-6">
+      {/* Right Content Area */}
+      <main className="min-w-0 flex-1 lg:overflow-y-auto p-4 sm:p-6">
         {children}
       </main>
     </div>
