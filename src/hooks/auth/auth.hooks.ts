@@ -1,7 +1,8 @@
 "use client";
 
-import { googleaccount, loginUser, registeruser, verifyaccount } from "@/api/auth/auth.api";
-import { useMutation } from "@tanstack/react-query";
+import { getMe, googleaccount, loginUser, registeruser, verifyaccount } from "@/api/auth/auth.api";
+import { getMes } from "@/api/profile.api";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 
 export function useLogin() {
@@ -29,4 +30,15 @@ export function useGoogle(){
   return useMutation({
     mutationFn:googleaccount
   })
+}
+
+export function useGetMe() {
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+  });
 }

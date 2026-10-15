@@ -69,10 +69,6 @@ export async function loginUser(data: LoginInput) {
   }
 }
 
-
-
-
-
 export type registerinput = {
   name: string;
   email: string;
@@ -207,7 +203,6 @@ export async function verifyaccount(data: VerifyUser) {
 
 
 
-
 export async function googleaccount(payload: string) {
   try {
     const res = await axios.post(
@@ -271,4 +266,43 @@ export async function googleaccount(payload: string) {
   }
 }
 
+
+export async function getMe() {
+   try {
+    const cookieStore = await cookies();
+
+    const accessToken = cookieStore.get("accessToken")?.value;
+
+    if (!accessToken) {
+      return {
+        success: false,
+        message: "You are not logged in",
+      };
+    }
+
+    const res = await axios.get(
+      "https://assignment-06-mu.vercel.app/api/v1/auth/me",
+      {
+        headers: {
+          Cookie: `accessToken=${accessToken}`,
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        message:
+          error.response?.data?.message || "Failed to fetch user",
+      };
+    }
+
+    return {
+      success: false,
+      message: "Failed to fetch user",
+    };
+  }
+}
 

@@ -1,14 +1,18 @@
 
-import { Button } from "@/components/ui/button";
+"use client";
+
 import Link from "next/link";
 import { Zap } from "lucide-react";
-import { getMe } from "@/service/getme";
+import { Button } from "@/components/ui/button";
 import { DropdownMenuDemo } from "../public/DropdownMenuDemo";
+import { useGetMe } from "@/hooks/auth/auth.hooks";
 
+const Header = () => {
+  const { data, isLoading, isError } = useGetMe();
 
-const Header = async () => {
-  const user = await getMe();
-// console.log(user.data)
+  // Adjust this according to your API response structure.
+  const user = data?.data;
+
   const routes = [
     { name: "Home", url: "/" },
     { name: "Features", url: "/features" },
@@ -45,8 +49,12 @@ const Header = async () => {
 
         {/* Authentication */}
         <div className="flex items-center gap-3">
-          {user?.success !== false ? (
-            <DropdownMenuDemo user={user.data} />
+          {isLoading ? (
+            <span className="text-sm text-gray-500">
+              Loading...
+            </span>
+          ) : !isError && user ? (
+            <DropdownMenuDemo user={user} />
           ) : (
             <>
               <Link href="/login">
@@ -72,4 +80,3 @@ const Header = async () => {
 };
 
 export default Header;
-
